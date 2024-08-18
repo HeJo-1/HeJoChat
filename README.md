@@ -4,9 +4,10 @@ Bu Python uygulaması, basit bir sohbet sunucusu ve istemcisi sağlar. Sunucu, i
 
 ## Özellikler
 
-- Sunucu, belirli bir oda koduyla istemcileri kabul eder.
-- İstemciler, bir sunucuya bağlanarak sohbet edebilirler.
-- Sunucu, maksimum istemci sayısını belirlemenize olanak tanır.
+- Sunucu, rastgele veya kullanıcının belirlediği bir oda koduyla istemcileri kabul eder.
+- İstemciler, bir sunucuya bağlanarak diğer katılımcılarla sohbet edebilirler.
+- Sunucu, maksimum istemci sayısını belirlemenize olanak tanır ve bu sınır aşıldığında yeni bağlantıları reddeder.
+- Sunucu, sohbet odasına katılan her istemcinin bağlantısını ve mesajlarını takip eder.
 
 ## Gereksinimler
 
@@ -19,16 +20,28 @@ Bu Python uygulaması, basit bir sohbet sunucusu ve istemcisi sağlar. Sunucu, i
 1. Sunucuyu başlatmak için terminal veya komut istemcisine aşağıdaki komutu girin:
    ```bash
    python chat.py
+   ```
+2. Sunucu başlatıldığında, sırasıyla aşağıdaki bilgileri girmeniz istenecektir:
+   - Sunucu IP adresi.
+   - Sunucu port numarası.
+   - Sohbet odasına izin verilen maksimum istemci sayısı.
+   - Sunucuya ait bir kullanıcı adı (nickname).
+   - Rastgele oluşturulmuş bir oda kodu veya kullanıcı tarafından belirlenmiş bir oda kodu.
 
-Sunucu başlatıldığında, sohbet odasına izin verilen maksimum istemci sayısını ve sunucu nickname'ini girmeniz istenecektir.
-Sunucu çalıştığında, odanın 6 haneli kodunu ve diğer gerekli bilgileri istemcilerle paylaşabilirsiniz.
+3. Sunucu çalıştığında, oda kodunu ve diğer gerekli bilgileri istemcilerle paylaşabilirsiniz.
 
 ### İstemci Başlatma
+
 1. İstemciyi başlatmak için terminal veya komut istemcisine aşağıdaki komutu girin:
    ```bash
    python chat.py
+   ```
+2. İstemci başlatıldığında, sırasıyla aşağıdaki bilgileri girmeniz istenecektir:
+   - Bağlanmak istediğiniz sunucunun IP adresi.
+   - Bağlanmak istediğiniz sunucunun port numarası.
+   - Katılmak istediğiniz sohbet odasının 6 haneli kodu.
+   - Sohbette kullanmak üzere bir kullanıcı adı (nickname).
 
-İstemci başlatıldığında, 6 haneli oda kodunu ve nickname'inizi girmeniz istenecektir.
+3. Bağlantı kurulduktan sonra, mesajları yazıp gönderebilir ve diğer istemcilerden gelen mesajları görebilirsiniz.
 
-
-Bağlantı kurulduktan sonra, mesajları yazıp gönderebilir ve diğer istemcilerden gelen mesajları görebilirsiniz.
+Bu sohbet uygulaması, basit bir Python tabanlı sunucu-istemci mimarisi kullanarak temel bir iletişim platformu sağlar.
