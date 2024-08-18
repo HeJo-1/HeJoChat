@@ -3,15 +3,23 @@ import threading
 import random
 
 def oda_kodu_olustur():
-    return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    print("Random bir oda kodu için : 1\nOda kodunuzu kendiniz belirleyin : 2")
+    secim = input("Lütfen bir seçim yapın : ")
+    if secim == "1":
+        return ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    elif secim == "2":
+        return input("Lütfen 6 haneli bir oda kodu girin: ")
 
 def sunucu_baslat():
-    sunucu_ip = 'localhost'
-    sunucu_port = 12345
+    ip = input("İp girin : ")
+    sunucu_ip = f'{ip}'
+    port = int(input("Port girin : "))
+    sunucu_port = port
     istemciler = []
+    istemciler_lock = threading.Lock()  # Lock for thread safety
     oda_kodu = oda_kodu_olustur()
     max_istemciler = int(input("Sohbet odasına izin verilen maksimum istemci sayısını girin: "))
-    sunucu_nick = input("Bir nickname belirleyin: ")  # Sunucu nickname'i
+    sunucu_nick = input("Bir nickname belirleyin: ")
 
     print(f"Sohbet Odası Kodu: {oda_kodu}")
 
@@ -22,16 +30,17 @@ def sunucu_baslat():
     print(f"Sunucu başlatıldı {sunucu_ip}:{sunucu_port}")
 
     def yayinla(mesaj, istemci_soketi=None):
-        for istemci in istemciler:
-            if istemci != istemci_soketi:
-                try:
-                    istemci.send(mesaj)
-                except:
-                    istemciler.remove(istemci)
+        with istemciler_lock:
+            for istemci in istemciler:
+                if istemci != istemci_soketi:
+                    try:
+                        istemci.send(mesaj)
+                    except:
+                        istemciler.remove(istemci)
 
     def istemciyi_yonet(istemci_soketi):
         try:
-            isim = istemci_soketi.recv(1024).decode('utf-8')  # Kullanıcının ismini al
+            isim = istemci_soketi.recv(1024).decode('utf-8')
             print(f"{isim} bağlandı.")
             istemci_soketi.send("Hoş geldiniz!".encode('utf-8'))
             while True:
@@ -40,9 +49,11 @@ def sunucu_baslat():
                     break
                 print(f"{isim}: {mesaj.decode('utf-8')}")
                 yayinla(f"{isim}: {mesaj.decode('utf-8')}".encode('utf-8'), istemci_soketi)
-        except:
-            istemciler.remove(istemci_soketi)
+        except Exception as e:
+            print(f"Bir hata oluştu: {e}")
         finally:
+            with istemciler_lock:
+                istemciler.remove(istemci_soketi)
             istemci_soketi.close()
 
     def mesaj_gonder():
@@ -55,7 +66,8 @@ def sunucu_baslat():
             if len(istemciler) < max_istemciler:
                 istemci_soketi, istemci_adresi = sunucu.accept()
                 print(f"Yeni bağlantı {istemci_adresi}")
-                istemciler.append(istemci_soketi)
+                with istemciler_lock:
+                    istemciler.append(istemci_soketi)
                 thread = threading.Thread(target=istemciyi_yonet, args=(istemci_soketi,))
                 thread.start()
             else:
@@ -70,15 +82,17 @@ def sunucu_baslat():
 def istemci_baslat():
     istemci = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     oda_kodu_giris = input("6 haneli Oda Kodunu girin: ")
+    ip = input("İp girin : ")
+    port = int(input("Port girin : "))
 
     try:
-        istemci.connect(('localhost', 12345))
-    except:
-        print("Sunucuya bağlanılamadı.")
+        istemci.connect((f'{ip}', port))
+    except Exception as e:
+        print(f"Sunucuya bağlanılamadı: {e}")
         return
 
     isim = input("Lütfen nickname giriniz: ")
-    istemci.send(isim.encode('utf-8'))  # Kullanıcı ismini gönder
+    istemci.send(isim.encode('utf-8'))
 
     def mesajlari_al():
         while True:
