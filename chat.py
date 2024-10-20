@@ -132,7 +132,7 @@ def ana():
     elif rol == '2':
         istemci_baslat()
     else:
-        print("Geçersiz seçim. Lütfen 'sunucu' veya 'istemci' yazın.")
+        print("Geçersiz seçim. Lütfen '1' veya '2' yazın.")
 
 if __name__ == "__main__":
     ana()
